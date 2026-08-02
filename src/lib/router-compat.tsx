@@ -4,8 +4,11 @@ import {
   useParams as useRouterParams,
   useNavigate,
   useSearch,
+  Outlet,
 } from "@tanstack/react-router";
-import type { AnchorHTMLAttributes, ReactNode } from "react";
+
+export { Outlet };
+import type { AnchorHTMLAttributes, ReactElement, ReactNode } from "react";
 
 type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
   to: string;
@@ -15,7 +18,7 @@ type LinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
 
 /** react-router-dom compatible <Link to="/string"> built on TanStack Router. */
 export function Link({ to, replace, ...rest }: LinkProps) {
-  const AnyLink = RouterLink as unknown as (props: Record<string, unknown>) => JSX.Element;
+  const AnyLink = RouterLink as unknown as (props: Record<string, unknown>) => ReactElement;
   return <AnyLink to={to} replace={replace} {...rest} />;
 }
 
