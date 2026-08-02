@@ -70,9 +70,17 @@ export function Footer() {
       </div>
 
       <div className="mx-auto mt-8 max-w-6xl border-t border-ink/10 pt-4">
-        <p className="font-sans text-xs font-light uppercase tracking-widest text-ink/40">
-          © {new Date().getFullYear()} Discovery of Coins. All rights reserved.
-        </p>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="font-sans text-xs font-light uppercase tracking-widest text-ink/40">
+            © {new Date().getFullYear()} Discovery of Coins. All rights reserved.
+          </p>
+          <Link
+            to="/admin/login"
+            className="font-sans text-xs font-light uppercase tracking-widest text-ink/40 transition-colors hover:text-ink"
+          >
+            Admin
+          </Link>
+        </div>
       </div>
     </footer>
   );
