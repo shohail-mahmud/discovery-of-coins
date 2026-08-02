@@ -1,6 +1,7 @@
 import { Link } from '@/lib/router-compat';
 import { motion } from 'framer-motion';
-import { ImageIcon, ShoppingBag } from 'lucide-react';
+import { ShoppingBag } from 'lucide-react';
+import { ProductImage } from './ProductImage';
 import { useCart } from '../../context/CartContext';
 import type { Product } from '../../data/products';
 
@@ -36,13 +37,8 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         whileHover={{ y: -4 }}
         className="flex flex-col border border-ink/10 bg-paper transition-shadow duration-300 hover:shadow-md"
       >
-        <div className="flex aspect-[4/3] items-center justify-center border-b border-ink/10 bg-paper">
-          <div className="flex flex-col items-center gap-2 text-ink/30">
-            <ImageIcon size={24} strokeWidth={1.5} />
-            <span className="font-sans text-[10px] uppercase tracking-widest">
-              Image
-            </span>
-          </div>
+        <div className="flex aspect-[4/3] items-center justify-center overflow-hidden border-b border-ink/10 bg-paper">
+          <ProductImage path={product.images[0]} alt={product.name} label="Image" />
         </div>
 
         <div className="flex flex-1 flex-col gap-1 p-4">
@@ -61,11 +57,12 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
           <button
             type="button"
+            disabled={!product.available}
             onClick={handleAddToCart}
-            className="mt-3 flex items-center justify-center gap-2 border border-ink bg-transparent px-4 py-2 font-sans text-xs font-medium uppercase tracking-widest text-ink transition-colors hover:bg-ink hover:text-brand"
+            className="mt-3 flex items-center justify-center gap-2 border border-ink bg-transparent px-4 py-2 font-sans text-xs font-medium uppercase tracking-widest text-ink transition-colors hover:bg-ink hover:text-brand disabled:cursor-not-allowed disabled:opacity-40"
           >
             <ShoppingBag size={14} strokeWidth={1.5} />
-            Add to Cart
+            {product.available ? 'Add to Cart' : 'Sold Out'}
           </button>
         </div>
       </motion.article>

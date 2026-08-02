@@ -76,11 +76,12 @@ export function ProductInfo({ product }: ProductInfoProps) {
 
         <button
           type="button"
+          disabled={!product.available}
           onClick={handleAddToCart}
-          className="flex flex-1 items-center justify-center gap-2 bg-ink px-8 py-3.5 font-sans text-sm font-medium uppercase tracking-widest text-brand transition-colors hover:bg-ink/85 md:flex-none"
+          className="flex flex-1 items-center justify-center gap-2 bg-ink px-8 py-3.5 font-sans text-sm font-medium uppercase tracking-widest text-brand transition-colors hover:bg-ink/85 disabled:cursor-not-allowed disabled:opacity-40 md:flex-none"
         >
           <ShoppingBag size={16} strokeWidth={1.5} />
-          Add to Cart
+          {product.available ? 'Add to Cart' : 'Sold Out'}
         </button>
       </div>
     </div>

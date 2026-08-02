@@ -6,7 +6,7 @@ import {
   useMemo,
   useCallback,
 } from 'react';
-import { products } from '../data/products';
+import { useProducts } from '../hooks/useProducts';
 
 interface CartItem {
   productId: string;
@@ -28,6 +28,7 @@ const CartContext = createContext<CartContextValue | null>(null);
 const STORAGE_KEY = 'doc-cart';
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  const { data: products = [] } = useProducts();
   const [items, setItems] = useState<CartItem[]>(() => {
     if (typeof window === 'undefined') return [];
     try {
@@ -95,7 +96,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const product = products.find((p) => p.id === item.productId);
       return sum + (product ? product.price * item.quantity : 0);
     }, 0);
-  }, [items]);
+  }, [items, products]);
 
   return (
     <CartContext.Provider

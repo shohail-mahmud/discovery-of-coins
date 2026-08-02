@@ -1,5 +1,7 @@
 import { Link } from '@/lib/router-compat';
 import { motion } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ContactItem {
   label: string;
@@ -8,20 +10,36 @@ interface ContactItem {
   isExternal?: boolean;
 }
 
-const contactItems: ContactItem[] = [
-  { label: 'Facebook', value: '@username' },
-  {
-    label: 'Instagram',
-    value: '@discoveryofcoins',
-    href: 'https://instagram.com/discoveryofcoins',
-    isExternal: true,
-  },
-  { label: "Admin's Instagram", value: '@username' },
-  { label: 'WhatsApp Channel', value: '@username' },
-  { label: 'Phone', value: '01700000000', href: 'tel:01700000000' },
-];
+async function fetchContactDetails() {
+  const { data, error } = await supabase
+    .from('contact_details')
+    .select('*')
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}
 
 export function ContactPage() {
+  const { data } = useQuery({ queryKey: ['contact-details'], queryFn: fetchContactDetails });
+
+  const handle = (value?: string | null) => (value ?? '').trim();
+  const instagramValue = handle(data?.instagram) || '@discoveryofcoins';
+  const phoneValue = handle(data?.phone) || '01700000000';
+
+  const contactItems: ContactItem[] = [
+    { label: 'Facebook', value: handle(data?.facebook) || '@username' },
+    {
+      label: 'Instagram',
+      value: instagramValue,
+      href: `https://instagram.com/${instagramValue.replace('@', '')}`,
+      isExternal: true,
+    },
+    { label: "Admin's Instagram", value: handle(data?.admin_instagram) || '@username' },
+    { label: 'WhatsApp Channel', value: handle(data?.whatsapp_channel) || '@username' },
+    { label: 'Phone', value: phoneValue, href: `tel:${phoneValue}` },
+  ];
+
   return (
     <section className="bg-brand px-6 py-10 md:py-16">
       <div className="mx-auto max-w-3xl">
