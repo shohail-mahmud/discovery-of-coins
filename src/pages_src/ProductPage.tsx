@@ -5,12 +5,22 @@ import { ProductGallery } from '../components/products/ProductGallery';
 import { ProductInfo } from '../components/products/ProductInfo';
 import { ProductSpecs } from '../components/products/ProductSpecs';
 import { ProductGrid } from '../components/products/ProductGrid';
-import { getProductById, getRelatedProducts } from '../data/products';
+import { useProduct } from '../hooks/useProducts';
 
 export function ProductPage() {
   const { id } = useParams<{ id: string }>();
-  const product = id ? getProductById(id) : undefined;
-  const relatedProducts = product ? getRelatedProducts(product.id) : [];
+  const { data: product, products, isLoading } = useProduct(id);
+  const relatedProducts = product
+    ? products.filter((item) => item.id !== product.id).slice(0, 4)
+    : [];
+
+  if (isLoading) {
+    return (
+      <section className="bg-brand px-6 py-20 text-center md:py-24">
+        <p className="font-sans text-sm font-light text-ink/60">Loading…</p>
+      </section>
+    );
+  }
 
   if (!product) {
     return (
@@ -50,7 +60,7 @@ export function ProductPage() {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="grid gap-8 md:grid-cols-2 md:gap-12 lg:gap-16"
         >
-          <ProductGallery productName={product.name} />
+          <ProductGallery productName={product.name} images={product.images} />
           <ProductInfo product={product} />
         </motion.div>
 

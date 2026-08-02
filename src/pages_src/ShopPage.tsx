@@ -2,9 +2,11 @@ import { useState, useMemo, useEffect } from 'react';
 import { Link, useSearchParams } from '@/lib/router-compat';
 import { motion } from 'framer-motion';
 import { ProductGrid } from '../components/products/ProductGrid';
-import { products, categories, type Category } from '../data/products';
+import { categories, type Category } from '../data/products';
+import { useProducts } from '../hooks/useProducts';
 
 export function ShopPage() {
+  const { data: products = [], isLoading } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category');
 
@@ -26,7 +28,7 @@ export function ShopPage() {
   const filteredProducts = useMemo(() => {
     if (activeCategory === 'All') return products;
     return products.filter((product) => product.category === activeCategory);
-  }, [activeCategory]);
+  }, [activeCategory, products]);
 
   const handleCategoryChange = (category: Category) => {
     setActiveCategory(category);
@@ -81,7 +83,11 @@ export function ShopPage() {
           ))}
         </div>
 
-        {filteredProducts.length > 0 ? (
+        {isLoading ? (
+          <p className="text-center font-sans text-sm font-light text-ink/60">
+            Loading collectibles…
+          </p>
+        ) : filteredProducts.length > 0 ? (
           <ProductGrid products={filteredProducts} />
         ) : (
           <p className="text-center font-sans text-sm font-light text-ink/60">
