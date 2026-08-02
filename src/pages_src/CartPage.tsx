@@ -1,8 +1,10 @@
 import { Link } from '@/lib/router-compat';
 import { motion } from 'framer-motion';
-import { Minus, Plus, Trash2, ImageIcon } from 'lucide-react';
+import { Minus, Plus, Trash2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { products } from '../data/products';
+import { useProducts } from '../hooks/useProducts';
+import { ProductImage } from '../components/products/ProductImage';
+import { CheckoutForm } from '../components/CheckoutForm';
 
 function formatPrice(price: number) {
   return `৳${price.toLocaleString('en-BD')}`;
@@ -10,6 +12,7 @@ function formatPrice(price: number) {
 
 export function CartPage() {
   const { items, updateQuantity, removeFromCart, subtotal, totalItems } = useCart();
+  const { data: products = [] } = useProducts();
 
   const cartProducts = items
     .map((item) => {
@@ -72,9 +75,9 @@ export function CartPage() {
               >
                 <Link
                   to={`/product/${product.id}`}
-                  className="flex aspect-square w-24 flex-shrink-0 items-center justify-center border border-ink/10 bg-paper md:w-28"
+                  className="flex aspect-square w-24 flex-shrink-0 items-center justify-center overflow-hidden border border-ink/10 bg-paper md:w-28"
                 >
-                  <ImageIcon size={24} className="text-ink/30" />
+                  <ProductImage path={product.images[0]} alt={product.name} />
                 </Link>
 
                 <div className="flex flex-1 flex-col justify-between">
@@ -144,16 +147,7 @@ export function CartPage() {
               <span className="font-light">Subtotal</span>
               <span className="font-medium">{formatPrice(subtotal)}</span>
             </div>
-            <button
-              type="button"
-              disabled
-              className="mt-5 w-full bg-ink py-3.5 font-sans text-sm font-medium uppercase tracking-widest text-brand opacity-60 cursor-not-allowed"
-            >
-              Proceed to Checkout
-            </button>
-            <p className="mt-3 text-center font-sans text-xs font-light text-ink/50">
-              Checkout coming soon
-            </p>
+            <CheckoutForm lines={cartProducts} total={subtotal} />
           </div>
         </div>
       </div>
