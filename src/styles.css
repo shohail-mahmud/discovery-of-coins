@@ -142,3 +142,29 @@
     color: var(--color-foreground);
   }
 }
+
+/* ---- Discovery of Coins imported design system ---- */
+@theme {
+  --font-heading: 'ID Grotesk', sans-serif;
+  --font-sans: 'Archivo', sans-serif;
+
+  --color-brand: #f7d417;
+  --color-brand-dark: #e5c315;
+  --color-ink: #111111;
+  --color-paper: #fffef8;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-brand font-sans text-ink antialiased;
+  }
+
+  ::selection {
+    background-color: var(--color-ink);
+    color: var(--color-brand);
+  }
+}

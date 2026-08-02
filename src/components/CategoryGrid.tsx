@@ -1,0 +1,65 @@
+import { CategoryCube } from './CategoryCube';
+
+function CoinIcon() {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <circle cx="24" cy="24" r="20" />
+      <circle cx="24" cy="24" r="14" />
+      <path d="M24 17v14M17 24h14" />
+    </svg>
+  );
+}
+
+function BanknoteIcon() {
+  return (
+    <svg viewBox="0 0 48 32" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="2" y="6" width="44" height="20" rx="2" />
+      <circle cx="24" cy="16" r="5" />
+      <path d="M6 10l4-2M6 22l4 2M42 10l-4-2M42 22l-4 2" />
+    </svg>
+  );
+}
+
+function StampIcon() {
+  return (
+    <svg viewBox="0 0 44 52" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="6" y="4" width="32" height="44" rx="1" />
+      <rect x="10" y="14" width="24" height="24" rx="1" strokeDasharray="2 2" />
+      <path d="M14 22h16M14 30h12" />
+    </svg>
+  );
+}
+
+const categories = [
+  { title: 'Bangladeshi Coins', description: 'Local Currency', icon: <CoinIcon /> },
+  { title: 'Bangladeshi Banknotes', description: 'Paper Money', icon: <BanknoteIcon /> },
+  { title: 'Bangladeshi Stamps', description: 'Postal Heritage', icon: <StampIcon /> },
+  { title: 'Foreign Banknotes', description: 'Global Paper', icon: <BanknoteIcon /> },
+  { title: 'Foreign Coins', description: 'World Metal', icon: <CoinIcon /> },
+  { title: 'Foreign Stamps', description: 'Worldwide Post', icon: <StampIcon /> },
+];
+
+export function CategoryGrid() {
+  return (
+    <section id="categories" className="bg-brand px-6 pt-16 pb-10 md:pt-20 md:pb-12">
+      <div className="mx-auto max-w-4xl">
+        <h2 className="mb-10 text-center font-sans text-sm font-medium uppercase tracking-[0.2em] text-ink/70 md:mb-14">
+          Shop by Category
+        </h2>
+
+        <div className="grid grid-cols-2 justify-items-center gap-5 md:grid-cols-3 md:gap-8">
+          {categories.map((category, index) => (
+            <CategoryCube
+              key={category.title}
+              title={category.title}
+              description={category.description}
+              icon={category.icon}
+              index={index}
+              to={`/shop?category=${encodeURIComponent(category.title)}`}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
