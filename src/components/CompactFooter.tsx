@@ -8,7 +8,7 @@ export function CompactFooter() {
           <p className="font-heading text-base tracking-tight text-ink md:text-lg">
             Discovery of Coins
           </p>
-          <p className="max-w-xs font-sans text-xs font-light leading-snug text-ink/70 md:max-w-xl">
+          <p className="max-w-xs font-sans text-xs font-light leading-snug text-ink/70 md:max-w-2xl">
             Authentic collectible banknotes, coins and stamps from Bangladesh and around the world.
           </p>
         </div>
