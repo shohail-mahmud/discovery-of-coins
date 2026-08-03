@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
+import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useCart } from '../context/CartContext';
 import type { Product } from '../data/products';
-import { formatPrice } from '@/lib/store';
+import { formatPrice, COURIERS } from '@/lib/store';
 
 interface CheckoutFormProps {
   lines: (Product & { quantity: number })[];
@@ -11,11 +13,17 @@ interface CheckoutFormProps {
 
 export function CheckoutForm({ lines, total }: CheckoutFormProps) {
   const { clearCart } = useCart();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [placed, setPlaced] = useState(false);
+  const [courier, setCourier] = useState<string>('');
   const [form, setForm] = useState({ name: '', phone: '', address: '', note: '' });
+
+  const deliveryCharge =
+    COURIERS.find((option) => option.name === courier)?.charge ?? 0;
+  const finalTotal = total + deliveryCharge;
 
   const update = (key: keyof typeof form, value: string) =>
     setForm((current) => ({ ...current, [key]: value }));
@@ -27,49 +35,40 @@ export function CheckoutForm({ lines, total }: CheckoutFormProps) {
       setError('Please fill in your name, phone and address.');
       return;
     }
+    if (!courier) {
+      setError('Please select a courier service.');
+      return;
+    }
     setSubmitting(true);
     try {
-      const orderId = crypto.randomUUID();
-      const { error: orderError } = await supabase.from('orders').insert({
-        id: orderId,
-        customer_name: form.name.trim(),
-        customer_phone: form.phone.trim(),
-        customer_address: form.address.trim(),
-        note: form.note.trim(),
-        total_price: total,
-      });
-      if (orderError) throw orderError;
-
-      const { error: itemsError } = await supabase.from('order_items').insert(
-        lines.map((line) => ({
-          order_id: orderId,
+      const { error: rpcError } = await supabase.rpc('place_order', {
+        _customer_name: form.name.trim(),
+        _customer_phone: form.phone.trim(),
+        _customer_address: form.address.trim(),
+        _note: form.note.trim(),
+        _courier: courier,
+        _delivery_charge: deliveryCharge,
+        _items: lines.map((line) => ({
           product_id: line.id,
-          product_name: line.name,
-          unit_price: line.price,
           quantity: line.quantity,
-        }))
-      );
-      if (itemsError) throw itemsError;
+        })),
+      });
+      if (rpcError) throw rpcError;
 
       clearCart();
-      setPlaced(true);
-    } catch {
-      setError('Something went wrong placing your order. Please try again.');
+      void queryClient.invalidateQueries({ queryKey: ['products'] });
+      void navigate({ to: '/order-success' });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : '';
+      setError(
+        message.toLowerCase().includes('stock')
+          ? 'Some items are no longer available in the requested quantity. Please review your cart.'
+          : 'Something went wrong placing your order. Please try again.'
+      );
     } finally {
       setSubmitting(false);
     }
   };
-
-  if (placed) {
-    return (
-      <div className="mt-5 border border-ink/15 bg-brand/40 p-4">
-        <p className="font-heading text-lg tracking-tight text-ink">Order placed</p>
-        <p className="mt-2 font-sans text-sm font-light text-ink/70">
-          Thank you. We will contact you shortly to confirm your order.
-        </p>
-      </div>
-    );
-  }
 
   if (!open) {
     return (
@@ -115,15 +114,57 @@ export function CheckoutForm({ lines, total }: CheckoutFormProps) {
         value={form.note}
         onChange={(e) => update('note', e.target.value)}
       />
-      {error ? (
-        <p className="font-sans text-xs text-red-700">{error}</p>
-      ) : null}
+
+      <p className="pt-1 font-sans text-xs font-medium uppercase tracking-widest text-ink/50">
+        Courier service
+      </p>
+      <div className="space-y-2">
+        {COURIERS.map((option) => (
+          <label
+            key={option.name}
+            className={`flex cursor-pointer items-center justify-between border px-3 py-2.5 font-sans text-sm text-ink transition-colors ${
+              courier === option.name ? 'border-ink' : 'border-ink/20 hover:border-ink/40'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="courier"
+                value={option.name}
+                checked={courier === option.name}
+                onChange={() => setCourier(option.name)}
+              />
+              {option.name}
+            </span>
+            <span className="font-light text-ink/70">
+              Delivery {formatPrice(option.charge)}
+            </span>
+          </label>
+        ))}
+      </div>
+
+      <div className="space-y-1 border-t border-ink/10 pt-3 font-sans text-sm text-ink">
+        <div className="flex justify-between">
+          <span className="font-light">Subtotal</span>
+          <span>{formatPrice(total)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="font-light">Delivery</span>
+          <span>{courier ? formatPrice(deliveryCharge) : '—'}</span>
+        </div>
+        <div className="flex justify-between font-medium">
+          <span>Total</span>
+          <span>{formatPrice(finalTotal)}</span>
+        </div>
+      </div>
+
+      {error ? <p className="font-sans text-xs text-red-700">{error}</p> : null}
       <button
         type="submit"
-        disabled={submitting}
+        disabled={submitting || !courier}
         className="w-full bg-ink py-3.5 font-sans text-sm font-medium uppercase tracking-widest text-brand transition-colors hover:bg-ink/90 disabled:opacity-60"
       >
-        {submitting ? 'Placing order…' : `Place order · ${formatPrice(total)}`}
+        {submitting ? 'Placing order…' : `Place order · ${formatPrice(finalTotal)}`}
       </button>
     </form>
   );
