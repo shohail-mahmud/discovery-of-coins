@@ -4,6 +4,7 @@ import { ShoppingBag } from 'lucide-react';
 import { ProductImage } from './ProductImage';
 import { useCart } from '../../context/CartContext';
 import type { Product } from '../../data/products';
+import { isInStock } from '@/lib/store';
 
 function formatPrice(price: number) {
   return `৳${price.toLocaleString('en-BD')}`;
@@ -16,10 +17,12 @@ interface ProductCardProps {
 
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const { addToCart } = useCart();
+  const inStock = isInStock(product);
 
   const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!inStock) return;
     addToCart(product.id, 1);
   };
 
@@ -61,12 +64,12 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
           <button
             type="button"
-            disabled={!product.available}
+            disabled={!inStock}
             onClick={handleAddToCart}
             className="mt-2 flex items-center justify-center gap-2 border border-ink bg-transparent px-4 py-1.5 font-sans text-xs font-medium uppercase tracking-widest text-ink transition-colors hover:bg-ink hover:text-brand disabled:cursor-not-allowed disabled:opacity-40"
           >
             <ShoppingBag size={14} strokeWidth={1.5} />
-            {product.available ? 'Add to Cart' : 'Sold Out'}
+            {inStock ? 'Add to Cart' : 'Out of Stock'}
           </button>
         </div>
       </motion.article>

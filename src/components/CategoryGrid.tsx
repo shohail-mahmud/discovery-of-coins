@@ -1,3 +1,4 @@
+import { Link } from '@/lib/router-compat';
 import { CategoryCube } from './CategoryCube';
 
 function CoinIcon() {
@@ -58,6 +59,15 @@ export function CategoryGrid() {
               to={`/shop?category=${encodeURIComponent(category.title)}`}
             />
           ))}
+        </div>
+
+        <div className="mt-10 text-center md:mt-12">
+          <Link
+            to="/shop"
+            className="inline-block border border-ink bg-ink px-8 py-3.5 font-sans text-xs font-medium uppercase tracking-widest text-brand transition-colors hover:bg-transparent hover:text-ink"
+          >
+            Shop All Products
+          </Link>
         </div>
       </div>
     </section>

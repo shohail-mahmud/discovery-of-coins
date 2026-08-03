@@ -18,6 +18,7 @@ type Draft = {
   type: string;
   description: string;
   price: string;
+  stock: string;
   available: boolean;
   images: string[];
 };
@@ -33,6 +34,7 @@ const emptyDraft: Draft = {
   type: 'Coin',
   description: '',
   price: '0',
+  stock: '0',
   available: true,
   images: [],
 };
@@ -49,6 +51,7 @@ function toDraft(product: Product): Draft {
     type: product.type,
     description: product.description,
     price: String(product.price),
+    stock: String(product.stock),
     available: product.available,
     images: product.images,
   };
@@ -70,7 +73,11 @@ export function AdminProducts() {
   const save = useMutation({
     mutationFn: async () => {
       if (!draft) return;
-      const payload = { ...draft, price: Number(draft.price) || 0 };
+      const payload = {
+        ...draft,
+        price: Number(draft.price) || 0,
+        stock: Math.max(0, Math.floor(Number(draft.stock) || 0)),
+      };
       if (editingId === 'new') {
         const { error: insertError } = await supabase.from('products').insert(payload);
         if (insertError) throw insertError;
@@ -234,6 +241,14 @@ export function AdminProducts() {
               value={draft.price}
               onChange={(e) => setDraft({ ...draft, price: e.target.value })}
             />
+            <input
+              className={inputClass}
+              placeholder="Stock quantity"
+              type="number"
+              min="0"
+              value={draft.stock}
+              onChange={(e) => setDraft({ ...draft, stock: e.target.value })}
+            />
             <label className="flex items-center gap-2 font-sans text-sm text-ink">
               <input
                 type="checkbox"
@@ -317,8 +332,9 @@ export function AdminProducts() {
                     {product.name}
                   </p>
                   <p className="font-sans text-xs font-light text-ink/60">
-                    {product.category} · {product.year} · {formatPrice(product.price)}
-                    {product.available ? '' : ' · Sold out'}
+                    {product.category} · {product.year} · {formatPrice(product.price)} ·
+                    Stock: {product.stock}
+                    {product.available && product.stock > 0 ? '' : ' · Out of stock'}
                   </p>
                 </div>
               </div>

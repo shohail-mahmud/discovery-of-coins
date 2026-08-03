@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Minus, Plus, ShoppingBag } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import type { Product } from '../../data/products';
+import { isInStock } from '@/lib/store';
 
 function formatPrice(price: number) {
   return `৳${price.toLocaleString('en-BD')}`;
@@ -14,12 +15,14 @@ interface ProductInfoProps {
 export function ProductInfo({ product }: ProductInfoProps) {
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
+  const inStock = isInStock(product);
 
-  const increase = () => setQuantity((q) => q + 1);
+  const increase = () => setQuantity((q) => Math.min(product.stock, q + 1));
   const decrease = () => setQuantity((q) => Math.max(1, q - 1));
 
   const handleAddToCart = () => {
-    addToCart(product.id, quantity);
+    if (!inStock) return;
+    addToCart(product.id, Math.min(quantity, product.stock));
   };
 
   return (
@@ -46,6 +49,10 @@ export function ProductInfo({ product }: ProductInfoProps) {
           {product.condition}
         </p>
       </div>
+
+      <p className="font-sans text-xs font-medium uppercase tracking-widest text-ink/60">
+        {inStock ? `In stock · ${product.stock} available` : 'Out of stock'}
+      </p>
 
       <p className="font-heading text-2xl text-ink md:text-3xl">
         {formatPrice(product.price)}
@@ -76,12 +83,12 @@ export function ProductInfo({ product }: ProductInfoProps) {
 
         <button
           type="button"
-          disabled={!product.available}
+          disabled={!inStock}
           onClick={handleAddToCart}
           className="flex flex-1 items-center justify-center gap-2 bg-ink px-8 py-3.5 font-sans text-sm font-medium uppercase tracking-widest text-brand transition-colors hover:bg-ink/85 disabled:cursor-not-allowed disabled:opacity-40 md:flex-none"
         >
           <ShoppingBag size={16} strokeWidth={1.5} />
-          {product.available ? 'Add to Cart' : 'Sold Out'}
+          {inStock ? 'Add to Cart' : 'Out of Stock'}
         </button>
       </div>
     </div>

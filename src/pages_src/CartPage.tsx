@@ -111,9 +111,13 @@ export function CartPage() {
                       <button
                         type="button"
                         onClick={() =>
-                          updateQuantity(product.id, product.quantity + 1)
+                          updateQuantity(
+                            product.id,
+                            Math.min(product.stock, product.quantity + 1)
+                          )
                         }
-                        className="p-2 text-ink/70 transition-colors hover:bg-ink/5"
+                        disabled={product.quantity >= product.stock}
+                        className="p-2 text-ink/70 transition-colors hover:bg-ink/5 disabled:opacity-30"
                         aria-label="Increase quantity"
                       >
                         <Plus size={14} />
