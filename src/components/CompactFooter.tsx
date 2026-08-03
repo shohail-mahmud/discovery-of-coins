@@ -3,12 +3,12 @@ import { Link } from '@/lib/router-compat';
 export function CompactFooter() {
   return (
     <footer className="border-t border-ink/10 bg-brand px-6 py-4 md:py-5">
-      <div className="mx-auto flex max-w-6xl flex-col justify-between gap-2 md:flex-row md:items-center">
+      <div className="mx-auto flex max-w-6xl flex-col justify-between gap-1 md:flex-row md:items-center">
         <div>
           <p className="font-heading text-base tracking-tight text-ink md:text-lg">
             Discovery of Coins
           </p>
-          <p className="max-w-xs font-sans text-xs font-light leading-snug text-ink/70">
+          <p className="max-w-xs font-sans text-xs font-light leading-snug text-ink/70 md:max-w-md">
             Authentic collectible banknotes, coins and stamps from Bangladesh and around the world.
           </p>
         </div>
@@ -19,3 +19,4 @@ export function CompactFooter() {
     </footer>
   );
 }
+
