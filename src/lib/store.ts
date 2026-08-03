@@ -16,6 +16,7 @@ type ProductRow = {
   description: string;
   price: number | string;
   available: boolean;
+  stock?: number | null;
   images: string[] | null;
 };
 
@@ -33,6 +34,7 @@ export function mapProduct(row: ProductRow): Product {
     description: row.description,
     price: Number(row.price),
     available: row.available,
+    stock: Number(row.stock ?? 0),
     images: row.images ?? [],
   };
 }
@@ -58,4 +60,13 @@ export async function fetchImageUrl(path: string): Promise<string | null> {
 
 export function formatPrice(price: number) {
   return `৳${price.toLocaleString('en-BD')}`;
+}
+
+export const COURIERS = [
+  { name: 'Steadfast', charge: 120 },
+  { name: 'Shundarban', charge: 50 },
+] as const;
+
+export function isInStock(product: { available: boolean; stock: number }) {
+  return product.available && product.stock > 0;
 }

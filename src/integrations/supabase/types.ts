@@ -91,33 +91,42 @@ export type Database = {
       }
       orders: {
         Row: {
+          courier: string
           created_at: string
           customer_address: string
           customer_name: string
           customer_phone: string
+          delivery_charge: number
           id: string
           note: string
           status: Database["public"]["Enums"]["order_status"]
+          subtotal: number
           total_price: number
         }
         Insert: {
+          courier?: string
           created_at?: string
           customer_address: string
           customer_name: string
           customer_phone: string
+          delivery_charge?: number
           id?: string
           note?: string
           status?: Database["public"]["Enums"]["order_status"]
+          subtotal?: number
           total_price?: number
         }
         Update: {
+          courier?: string
           created_at?: string
           customer_address?: string
           customer_name?: string
           customer_phone?: string
+          delivery_charge?: number
           id?: string
           note?: string
           status?: Database["public"]["Enums"]["order_status"]
+          subtotal?: number
           total_price?: number
         }
         Relationships: []
@@ -136,6 +145,7 @@ export type Database = {
           images: string[]
           name: string
           price: number
+          stock: number
           type: string
           updated_at: string
           year: string
@@ -153,6 +163,7 @@ export type Database = {
           images?: string[]
           name: string
           price?: number
+          stock?: number
           type?: string
           updated_at?: string
           year?: string
@@ -170,6 +181,7 @@ export type Database = {
           images?: string[]
           name?: string
           price?: number
+          stock?: number
           type?: string
           updated_at?: string
           year?: string
@@ -210,6 +222,18 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      place_order: {
+        Args: {
+          _courier: string
+          _customer_address: string
+          _customer_name: string
+          _customer_phone: string
+          _delivery_charge: number
+          _items: Json
+          _note: string
+        }
+        Returns: string
       }
     }
     Enums: {

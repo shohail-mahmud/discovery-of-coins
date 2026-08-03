@@ -19,6 +19,9 @@ interface OrderRow {
   customer_phone: string;
   customer_address: string;
   note: string;
+  subtotal: number;
+  courier: string;
+  delivery_charge: number;
   total_price: number;
   status: Status;
   created_at: string;
@@ -136,7 +139,14 @@ export function AdminOrders() {
             ))}
           </div>
 
-          <p className="mt-3 text-right font-heading text-lg text-ink">
+          <div className="mt-3 space-y-1 text-right font-sans text-sm text-ink/70">
+            <p>Subtotal: {formatPrice(Number(order.subtotal))}</p>
+            <p>
+              Courier: {order.courier || '—'} · Delivery{' '}
+              {formatPrice(Number(order.delivery_charge))}
+            </p>
+          </div>
+          <p className="mt-2 text-right font-heading text-lg text-ink">
             Total: {formatPrice(Number(order.total_price))}
           </p>
         </div>
