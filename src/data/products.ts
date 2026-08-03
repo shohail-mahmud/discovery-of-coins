@@ -34,5 +34,6 @@ export interface Product {
   type: 'Coin' | 'Banknote' | 'Stamp';
   description: string;
   available: boolean;
+  stock: number;
   images: string[];
 }
