@@ -15,6 +15,7 @@ import { Route as SiteAboutRouteImport } from './routes/_site.about'
 import { Route as SiteCartRouteImport } from './routes/_site.cart'
 import { Route as SiteContactRouteImport } from './routes/_site.contact'
 import { Route as SiteOfferRouteImport } from './routes/_site.offer'
+import { Route as SiteOrderSuccessRouteImport } from './routes/_site.order-success'
 import { Route as SiteShopRouteImport } from './routes/_site.shop'
 import { Route as SiteTermsRouteImport } from './routes/_site.terms'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
@@ -50,6 +51,11 @@ const SiteOfferRoute = SiteOfferRouteImport.update({
   path: '/offer',
   getParentRoute: () => SiteRoute,
 } as any)
+const SiteOrderSuccessRoute = SiteOrderSuccessRouteImport.update({
+  id: '/order-success',
+  path: '/order-success',
+  getParentRoute: () => SiteRoute,
+} as any)
 const SiteShopRoute = SiteShopRouteImport.update({
   id: '/shop',
   path: '/shop',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/cart': typeof SiteCartRoute
   '/contact': typeof SiteContactRoute
   '/offer': typeof SiteOfferRoute
+  '/order-success': typeof SiteOrderSuccessRoute
   '/shop': typeof SiteShopRoute
   '/terms': typeof SiteTermsRoute
   '/admin/login': typeof AdminLoginRoute
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   '/cart': typeof SiteCartRoute
   '/contact': typeof SiteContactRoute
   '/offer': typeof SiteOfferRoute
+  '/order-success': typeof SiteOrderSuccessRoute
   '/shop': typeof SiteShopRoute
   '/terms': typeof SiteTermsRoute
   '/admin/login': typeof AdminLoginRoute
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/_site/cart': typeof SiteCartRoute
   '/_site/contact': typeof SiteContactRoute
   '/_site/offer': typeof SiteOfferRoute
+  '/_site/order-success': typeof SiteOrderSuccessRoute
   '/_site/shop': typeof SiteShopRoute
   '/_site/terms': typeof SiteTermsRoute
   '/admin/login': typeof AdminLoginRoute
@@ -122,6 +131,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/contact'
     | '/offer'
+    | '/order-success'
     | '/shop'
     | '/terms'
     | '/admin/login'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/contact'
     | '/offer'
+    | '/order-success'
     | '/shop'
     | '/terms'
     | '/admin/login'
@@ -146,6 +157,7 @@ export interface FileRouteTypes {
     | '/_site/cart'
     | '/_site/contact'
     | '/_site/offer'
+    | '/_site/order-success'
     | '/_site/shop'
     | '/_site/terms'
     | '/admin/login'
@@ -204,6 +216,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteOfferRouteImport
       parentRoute: typeof SiteRoute
     }
+    '/_site/order-success': {
+      id: '/_site/order-success'
+      path: '/order-success'
+      fullPath: '/order-success'
+      preLoaderRoute: typeof SiteOrderSuccessRouteImport
+      parentRoute: typeof SiteRoute
+    }
     '/_site/shop': {
       id: '/_site/shop'
       path: '/shop'
@@ -247,6 +266,7 @@ interface SiteRouteChildren {
   SiteCartRoute: typeof SiteCartRoute
   SiteContactRoute: typeof SiteContactRoute
   SiteOfferRoute: typeof SiteOfferRoute
+  SiteOrderSuccessRoute: typeof SiteOrderSuccessRoute
   SiteShopRoute: typeof SiteShopRoute
   SiteTermsRoute: typeof SiteTermsRoute
   SiteIndexRoute: typeof SiteIndexRoute
@@ -258,6 +278,7 @@ const SiteRouteChildren: SiteRouteChildren = {
   SiteCartRoute: SiteCartRoute,
   SiteContactRoute: SiteContactRoute,
   SiteOfferRoute: SiteOfferRoute,
+  SiteOrderSuccessRoute: SiteOrderSuccessRoute,
   SiteShopRoute: SiteShopRoute,
   SiteTermsRoute: SiteTermsRoute,
   SiteIndexRoute: SiteIndexRoute,
