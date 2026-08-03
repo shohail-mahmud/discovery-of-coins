@@ -48,15 +48,16 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           <p className="font-sans text-[10px] font-medium uppercase tracking-widest text-ink/50">
             {product.country}
           </p>
-          <h3 className="font-heading text-base leading-tight tracking-tight text-ink md:text-lg">
+          <h3 className="font-heading text-lg leading-tight tracking-tight text-ink">
             {product.name}
           </h3>
           <p className="font-sans text-xs font-light text-ink/60">
             {product.denomination} · {product.year} · {product.condition}
           </p>
-          <p className="mt-1.5 font-heading text-sm text-ink md:text-base">
+          <p className="mt-1.5 font-heading text-base text-ink">
             {formatPrice(product.price)}
           </p>
+
 
           <button
             type="button"
