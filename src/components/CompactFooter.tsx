@@ -1,5 +1,3 @@
-import { Link } from '@/lib/router-compat';
-
 export function CompactFooter() {
   return (
     <footer className="border-t border-ink/10 bg-brand px-6 py-4 md:py-5">
