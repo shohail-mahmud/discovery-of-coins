@@ -76,6 +76,9 @@ export function AdminDashboard() {
         <div className="mt-8">
           {tab === 'Orders' ? <AdminOrders /> : null}
           {tab === 'Products' ? <AdminProducts /> : null}
+          {tab === 'Categories' ? <AdminCategories /> : null}
+          {tab === 'Combos' ? <AdminCombos /> : null}
+          {tab === 'FAQs' ? <AdminFaqs /> : null}
           {tab === 'Contact Details' ? <AdminContact /> : null}
         </div>
       </div>
