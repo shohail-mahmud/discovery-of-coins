@@ -2,35 +2,40 @@ import { useState, useMemo, useEffect } from 'react';
 import { Link, useSearchParams } from '@/lib/router-compat';
 import { motion } from 'framer-motion';
 import { ProductGrid } from '../components/products/ProductGrid';
-import { categories, type Category } from '../data/products';
 import { useProducts } from '../hooks/useProducts';
+import { useVisibleCategories } from '../hooks/useContent';
 
 export function ShopPage() {
   const { data: products = [], isLoading } = useProducts();
+  const { data: visibleCategories } = useVisibleCategories();
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category');
 
-  const [activeCategory, setActiveCategory] = useState<Category>(() => {
-    if (categoryParam && categories.includes(categoryParam as Category)) {
-      return categoryParam as Category;
-    }
-    return 'All';
-  });
+  const categoryNames = useMemo(
+    () => visibleCategories.map((category) => category.name),
+    [visibleCategories],
+  );
+  const filters = useMemo(() => ['All', ...categoryNames], [categoryNames]);
+
+  const [activeCategory, setActiveCategory] = useState<string>('All');
 
   useEffect(() => {
-    if (categoryParam && categories.includes(categoryParam as Category)) {
-      setActiveCategory(categoryParam as Category);
+    if (categoryParam && categoryNames.includes(categoryParam)) {
+      setActiveCategory(categoryParam);
     } else {
       setActiveCategory('All');
     }
-  }, [categoryParam]);
+  }, [categoryParam, categoryNames]);
 
   const filteredProducts = useMemo(() => {
-    if (activeCategory === 'All') return products;
-    return products.filter((product) => product.category === activeCategory);
-  }, [activeCategory, products]);
+    const inVisible = products.filter(
+      (product) => categoryNames.length === 0 || categoryNames.includes(product.category),
+    );
+    if (activeCategory === 'All') return inVisible;
+    return inVisible.filter((product) => product.category === activeCategory);
+  }, [activeCategory, products, categoryNames]);
 
-  const handleCategoryChange = (category: Category) => {
+  const handleCategoryChange = (category: string) => {
     setActiveCategory(category);
     if (category === 'All') {
       setSearchParams({}, { replace: true });
@@ -67,7 +72,7 @@ export function ShopPage() {
         </motion.div>
 
         <div className="mb-8 flex flex-wrap justify-center gap-2 md:mb-10">
-          {categories.map((category) => (
+          {filters.map((category) => (
             <button
               key={category}
               type="button"

@@ -1,5 +1,7 @@
 import { Link } from '@/lib/router-compat';
+import type { ReactNode } from 'react';
 import { CategoryCube } from './CategoryCube';
+import { useVisibleCategories } from '@/hooks/useContent';
 
 function CoinIcon() {
   return (
@@ -31,16 +33,36 @@ function StampIcon() {
   );
 }
 
-const categories = [
-  { title: 'Bangladeshi Coins', description: 'Local Currency', icon: <CoinIcon /> },
-  { title: 'Bangladeshi Banknotes', description: 'Paper Money', icon: <BanknoteIcon /> },
-  { title: 'Bangladeshi Stamps', description: 'Postal Heritage', icon: <StampIcon /> },
-  { title: 'Foreign Banknotes', description: 'Global Paper', icon: <BanknoteIcon /> },
-  { title: 'Foreign Coins', description: 'World Metal', icon: <CoinIcon /> },
-  { title: 'Foreign Stamps', description: 'Worldwide Post', icon: <StampIcon /> },
-];
+function AccessoryIcon() {
+  return (
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="6" y="10" width="36" height="28" rx="2" />
+      <path d="M6 18h36M18 10v28" />
+      <circle cx="30" cy="28" r="4" />
+    </svg>
+  );
+}
+
+const DESCRIPTIONS: Record<string, string> = {
+  'Bangladeshi Coins': 'Local Currency',
+  'Bangladeshi Banknotes': 'Paper Money',
+  'Bangladeshi Stamps': 'Postal Heritage',
+  'Foreign Banknotes': 'Global Paper',
+  'Foreign Coins': 'World Metal',
+  'Foreign Stamps': 'Worldwide Post',
+  Accessories: 'Folders & More',
+};
+
+function iconFor(name: string): ReactNode {
+  if (name.includes('Stamp')) return <StampIcon />;
+  if (name.includes('Banknote')) return <BanknoteIcon />;
+  if (name.includes('Coin')) return <CoinIcon />;
+  return <AccessoryIcon />;
+}
 
 export function CategoryGrid() {
+  const { data: categories } = useVisibleCategories();
+
   return (
     <section id="categories" className="bg-brand px-6 pt-16 pb-10 md:pt-20 md:pb-12">
       <div className="mx-auto max-w-4xl">
@@ -51,12 +73,12 @@ export function CategoryGrid() {
         <div className="grid grid-cols-2 justify-items-center gap-5 md:grid-cols-3 md:gap-8">
           {categories.map((category, index) => (
             <CategoryCube
-              key={category.title}
-              title={category.title}
-              description={category.description}
-              icon={category.icon}
+              key={category.id}
+              title={category.name}
+              description={DESCRIPTIONS[category.name] ?? 'Collectibles'}
+              icon={iconFor(category.name)}
               index={index}
-              to={`/shop?category=${encodeURIComponent(category.title)}`}
+              to={`/shop?category=${encodeURIComponent(category.name)}`}
             />
           ))}
         </div>

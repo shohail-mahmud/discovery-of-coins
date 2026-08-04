@@ -6,8 +6,18 @@ import { supabase } from '@/integrations/supabase/client';
 import { AdminOrders } from './AdminOrders';
 import { AdminProducts } from './AdminProducts';
 import { AdminContact } from './AdminContact';
+import { AdminCategories } from './AdminCategories';
+import { AdminFaqs } from './AdminFaqs';
+import { AdminCombos } from './AdminCombos';
 
-const TABS = ['Orders', 'Products', 'Contact Details'] as const;
+const TABS = [
+  'Orders',
+  'Products',
+  'Categories',
+  'Combos',
+  'FAQs',
+  'Contact Details',
+] as const;
 type Tab = (typeof TABS)[number];
 
 export function AdminDashboard() {
@@ -66,6 +76,9 @@ export function AdminDashboard() {
         <div className="mt-8">
           {tab === 'Orders' ? <AdminOrders /> : null}
           {tab === 'Products' ? <AdminProducts /> : null}
+          {tab === 'Categories' ? <AdminCategories /> : null}
+          {tab === 'Combos' ? <AdminCombos /> : null}
+          {tab === 'FAQs' ? <AdminFaqs /> : null}
           {tab === 'Contact Details' ? <AdminContact /> : null}
         </div>
       </div>

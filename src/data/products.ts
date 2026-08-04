@@ -5,7 +5,9 @@ export type Category =
   | 'Bangladeshi Stamps'
   | 'Foreign Banknotes'
   | 'Foreign Coins'
-  | 'Foreign Stamps';
+  | 'Foreign Stamps'
+  | 'Accessories'
+  | (string & {});
 
 export const categories: Category[] = [
   'All',
@@ -15,6 +17,7 @@ export const categories: Category[] = [
   'Foreign Banknotes',
   'Foreign Coins',
   'Foreign Stamps',
+  'Accessories',
 ];
 
 export const productCategories = categories.filter((c) => c !== 'All');
