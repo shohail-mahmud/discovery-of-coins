@@ -14,6 +14,110 @@ export type Database = {
   }
   public: {
     Tables: {
+      categories: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          sort_order: number
+          updated_at: string
+          visible: boolean
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          sort_order?: number
+          updated_at?: string
+          visible?: boolean
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          sort_order?: number
+          updated_at?: string
+          visible?: boolean
+        }
+        Relationships: []
+      }
+      combo_items: {
+        Row: {
+          combo_id: string
+          country: string
+          created_at: string
+          denomination: string
+          description: string
+          id: string
+          slot_number: number
+          updated_at: string
+        }
+        Insert: {
+          combo_id: string
+          country?: string
+          created_at?: string
+          denomination?: string
+          description?: string
+          id?: string
+          slot_number?: number
+          updated_at?: string
+        }
+        Update: {
+          combo_id?: string
+          country?: string
+          created_at?: string
+          denomination?: string
+          description?: string
+          id?: string
+          slot_number?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "combo_items_combo_id_fkey"
+            columns: ["combo_id"]
+            isOneToOne: false
+            referencedRelation: "combos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      combos: {
+        Row: {
+          available: boolean
+          created_at: string
+          description: string
+          id: string
+          images: string[]
+          item_count: number
+          name: string
+          price: number
+          updated_at: string
+        }
+        Insert: {
+          available?: boolean
+          created_at?: string
+          description?: string
+          id?: string
+          images?: string[]
+          item_count?: number
+          name: string
+          price?: number
+          updated_at?: string
+        }
+        Update: {
+          available?: boolean
+          created_at?: string
+          description?: string
+          id?: string
+          images?: string[]
+          item_count?: number
+          name?: string
+          price?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contact_details: {
         Row: {
           admin_instagram: string
@@ -41,6 +145,36 @@ export type Database = {
           phone?: string
           updated_at?: string
           whatsapp_channel?: string
+        }
+        Relationships: []
+      }
+      faqs: {
+        Row: {
+          answer: string
+          created_at: string
+          display_order: number
+          enabled: boolean
+          id: string
+          question: string
+          updated_at: string
+        }
+        Insert: {
+          answer?: string
+          created_at?: string
+          display_order?: number
+          enabled?: boolean
+          id?: string
+          question: string
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          created_at?: string
+          display_order?: number
+          enabled?: boolean
+          id?: string
+          question?: string
+          updated_at?: string
         }
         Relationships: []
       }
