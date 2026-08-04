@@ -5,7 +5,7 @@ const navLinks = [
   { label: 'About', href: '/about' },
   { label: 'Shop', href: '/shop' },
   { label: 'Contact', href: '/contact' },
-  { label: 'Offer', href: '/offer' },
+  { label: 'Combo', href: '/combo' },
   { label: 'Terms & Policy', href: '/terms' },
 ];
 

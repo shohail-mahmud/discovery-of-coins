@@ -13,6 +13,7 @@ import { Route as SiteRouteImport } from './routes/_site'
 import { Route as SiteIndexRouteImport } from './routes/_site.index'
 import { Route as SiteAboutRouteImport } from './routes/_site.about'
 import { Route as SiteCartRouteImport } from './routes/_site.cart'
+import { Route as SiteComboRouteImport } from './routes/_site.combo'
 import { Route as SiteContactRouteImport } from './routes/_site.contact'
 import { Route as SiteOfferRouteImport } from './routes/_site.offer'
 import { Route as SiteOrderSuccessRouteImport } from './routes/_site.order-success'
@@ -39,6 +40,11 @@ const SiteAboutRoute = SiteAboutRouteImport.update({
 const SiteCartRoute = SiteCartRouteImport.update({
   id: '/cart',
   path: '/cart',
+  getParentRoute: () => SiteRoute,
+} as any)
+const SiteComboRoute = SiteComboRouteImport.update({
+  id: '/combo',
+  path: '/combo',
   getParentRoute: () => SiteRoute,
 } as any)
 const SiteContactRoute = SiteContactRouteImport.update({
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/': typeof SiteIndexRoute
   '/about': typeof SiteAboutRoute
   '/cart': typeof SiteCartRoute
+  '/combo': typeof SiteComboRoute
   '/contact': typeof SiteContactRoute
   '/offer': typeof SiteOfferRoute
   '/order-success': typeof SiteOrderSuccessRoute
@@ -98,6 +105,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/about': typeof SiteAboutRoute
   '/cart': typeof SiteCartRoute
+  '/combo': typeof SiteComboRoute
   '/contact': typeof SiteContactRoute
   '/offer': typeof SiteOfferRoute
   '/order-success': typeof SiteOrderSuccessRoute
@@ -113,6 +121,7 @@ export interface FileRoutesById {
   '/_site': typeof SiteRouteWithChildren
   '/_site/about': typeof SiteAboutRoute
   '/_site/cart': typeof SiteCartRoute
+  '/_site/combo': typeof SiteComboRoute
   '/_site/contact': typeof SiteContactRoute
   '/_site/offer': typeof SiteOfferRoute
   '/_site/order-success': typeof SiteOrderSuccessRoute
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/cart'
+    | '/combo'
     | '/contact'
     | '/offer'
     | '/order-success'
@@ -141,6 +151,7 @@ export interface FileRouteTypes {
   to:
     | '/about'
     | '/cart'
+    | '/combo'
     | '/contact'
     | '/offer'
     | '/order-success'
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/_site'
     | '/_site/about'
     | '/_site/cart'
+    | '/_site/combo'
     | '/_site/contact'
     | '/_site/offer'
     | '/_site/order-success'
@@ -200,6 +212,13 @@ declare module '@tanstack/react-router' {
       path: '/cart'
       fullPath: '/cart'
       preLoaderRoute: typeof SiteCartRouteImport
+      parentRoute: typeof SiteRoute
+    }
+    '/_site/combo': {
+      id: '/_site/combo'
+      path: '/combo'
+      fullPath: '/combo'
+      preLoaderRoute: typeof SiteComboRouteImport
       parentRoute: typeof SiteRoute
     }
     '/_site/contact': {
@@ -264,6 +283,7 @@ declare module '@tanstack/react-router' {
 interface SiteRouteChildren {
   SiteAboutRoute: typeof SiteAboutRoute
   SiteCartRoute: typeof SiteCartRoute
+  SiteComboRoute: typeof SiteComboRoute
   SiteContactRoute: typeof SiteContactRoute
   SiteOfferRoute: typeof SiteOfferRoute
   SiteOrderSuccessRoute: typeof SiteOrderSuccessRoute
@@ -276,6 +296,7 @@ interface SiteRouteChildren {
 const SiteRouteChildren: SiteRouteChildren = {
   SiteAboutRoute: SiteAboutRoute,
   SiteCartRoute: SiteCartRoute,
+  SiteComboRoute: SiteComboRoute,
   SiteContactRoute: SiteContactRoute,
   SiteOfferRoute: SiteOfferRoute,
   SiteOrderSuccessRoute: SiteOrderSuccessRoute,
