@@ -62,18 +62,27 @@ export async function fetchCombos(): Promise<Combo[]> {
     .order('created_at', { ascending: true });
   if (error) throw error;
   return (data ?? []).map((row) => {
-    const record = row as unknown as Record<string, unknown>;
-    const items = ((record.combo_items as ComboItem[]) ?? [])
+    const record = row as unknown as {
+      id: string;
+      name?: string;
+      description?: string;
+      price?: number | string;
+      available?: boolean;
+      item_count?: number;
+      images?: string[] | null;
+      combo_items?: ComboItem[] | null;
+    };
+    const items = (record.combo_items ?? [])
       .slice()
       .sort((a, b) => a.slot_number - b.slot_number);
     return {
-      id: String(record.id),
-      name: String(record.name ?? ''),
-      description: String(record.description ?? ''),
+      id: record.id,
+      name: record.name ?? '',
+      description: record.description ?? '',
       price: Number(record.price ?? 0),
       available: Boolean(record.available),
       item_count: Number(record.item_count ?? items.length),
-      images: (record.images as string[]) ?? [],
+      images: record.images ?? [],
       items,
     } satisfies Combo;
   });
