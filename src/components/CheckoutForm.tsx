@@ -3,11 +3,10 @@ import { useNavigate } from '@tanstack/react-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useCart } from '../context/CartContext';
-import type { Product } from '../data/products';
-import { formatPrice, COURIERS } from '@/lib/store';
+import { formatPrice, COURIERS, type CartLine } from '@/lib/store';
 
 interface CheckoutFormProps {
-  lines: (Product & { quantity: number })[];
+  lines: CartLine[];
   total: number;
 }
 
@@ -48,10 +47,11 @@ export function CheckoutForm({ lines, total }: CheckoutFormProps) {
         _note: form.note.trim(),
         _courier: courier,
         _delivery_charge: deliveryCharge,
-        _items: lines.map((line) => ({
-          product_id: line.id,
-          quantity: line.quantity,
-        })),
+        _items: lines.map((line) =>
+          line.kind === 'combo'
+            ? { combo_id: line.id, quantity: line.quantity }
+            : { product_id: line.id, quantity: line.quantity }
+        ),
       });
       if (rpcError) throw rpcError;
 
@@ -60,8 +60,9 @@ export function CheckoutForm({ lines, total }: CheckoutFormProps) {
       void navigate({ to: '/order-success' });
     } catch (err) {
       const message = err instanceof Error ? err.message : '';
+      const lower = message.toLowerCase();
       setError(
-        message.toLowerCase().includes('stock')
+        lower.includes('stock') || lower.includes('combo')
           ? 'Some items are no longer available in the requested quantity. Please review your cart.'
           : 'Something went wrong placing your order. Please try again.'
       );
@@ -75,7 +76,7 @@ export function CheckoutForm({ lines, total }: CheckoutFormProps) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="mt-5 w-full bg-ink py-3.5 font-sans text-sm font-medium uppercase tracking-widest text-brand transition-colors hover:bg-ink/90"
+        className="mt-3 w-full bg-ink py-3 font-sans text-sm font-medium uppercase tracking-widest text-brand transition-colors hover:bg-ink/90"
       >
         Proceed to Checkout
       </button>
@@ -83,10 +84,10 @@ export function CheckoutForm({ lines, total }: CheckoutFormProps) {
   }
 
   const inputClass =
-    'w-full border border-ink/20 bg-paper px-3 py-2.5 font-sans text-sm font-light text-ink outline-none focus:border-ink/50';
+    'w-full border border-ink/20 bg-paper px-3 py-2 font-sans text-sm font-light text-ink outline-none focus:border-ink/50';
 
   return (
-    <form onSubmit={handleSubmit} className="mt-5 space-y-3">
+    <form onSubmit={handleSubmit} className="mt-3 space-y-2.5">
       <p className="font-sans text-xs font-medium uppercase tracking-widest text-ink/50">
         Delivery details
       </p>
@@ -103,26 +104,26 @@ export function CheckoutForm({ lines, total }: CheckoutFormProps) {
         onChange={(e) => update('phone', e.target.value)}
       />
       <textarea
-        className={`${inputClass} min-h-[80px]`}
+        className={`${inputClass} min-h-[64px]`}
         placeholder="Delivery address"
         value={form.address}
         onChange={(e) => update('address', e.target.value)}
       />
       <textarea
-        className={`${inputClass} min-h-[60px]`}
+        className={`${inputClass} min-h-[48px]`}
         placeholder="Note (optional)"
         value={form.note}
         onChange={(e) => update('note', e.target.value)}
       />
 
-      <p className="pt-1 font-sans text-xs font-medium uppercase tracking-widest text-ink/50">
+      <p className="pt-0.5 font-sans text-xs font-medium uppercase tracking-widest text-ink/50">
         Courier service
       </p>
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         {COURIERS.map((option) => (
           <label
             key={option.name}
-            className={`flex cursor-pointer items-center justify-between border px-3 py-2.5 font-sans text-sm text-ink transition-colors ${
+            className={`flex cursor-pointer items-center justify-between border px-3 py-2 font-sans text-sm text-ink transition-colors ${
               courier === option.name ? 'border-ink' : 'border-ink/20 hover:border-ink/40'
             }`}
           >
@@ -143,7 +144,7 @@ export function CheckoutForm({ lines, total }: CheckoutFormProps) {
         ))}
       </div>
 
-      <div className="space-y-1 border-t border-ink/10 pt-3 font-sans text-sm text-ink">
+      <div className="space-y-0.5 border-t border-ink/10 pt-2 font-sans text-sm text-ink">
         <div className="flex justify-between">
           <span className="font-light">Subtotal</span>
           <span>{formatPrice(total)}</span>
@@ -162,7 +163,7 @@ export function CheckoutForm({ lines, total }: CheckoutFormProps) {
       <button
         type="submit"
         disabled={submitting || !courier}
-        className="w-full bg-ink py-3.5 font-sans text-sm font-medium uppercase tracking-widest text-brand transition-colors hover:bg-ink/90 disabled:opacity-60"
+        className="w-full bg-ink py-3 font-sans text-sm font-medium uppercase tracking-widest text-brand transition-colors hover:bg-ink/90 disabled:opacity-60"
       >
         {submitting ? 'Placing order…' : `Place order · ${formatPrice(finalTotal)}`}
       </button>

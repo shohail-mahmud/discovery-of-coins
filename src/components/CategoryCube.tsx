@@ -23,7 +23,7 @@ export function CategoryCube({ title, description, icon, index, to }: CategoryCu
           ease: [0.22, 1, 0.36, 1],
         }}
         whileHover={{ y: -6 }}
-        className="flex aspect-square w-full max-w-[180px] flex-col items-center justify-center gap-4 border border-ink/10 bg-paper p-5 text-center transition-shadow duration-300 hover:shadow-lg md:max-w-[200px]"
+        className="flex aspect-square w-full max-w-[180px] flex-col items-center justify-center gap-3 border border-ink/10 bg-paper p-4 text-center transition-shadow duration-300 hover:shadow-lg md:max-w-[200px]"
       >
         <div className="flex h-14 w-14 items-center justify-center text-ink/90 transition-transform duration-300 group-hover:scale-105">
           {icon}

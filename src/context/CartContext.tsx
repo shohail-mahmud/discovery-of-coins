@@ -7,15 +7,19 @@ import {
   useCallback,
 } from 'react';
 import { useProducts } from '../hooks/useProducts';
+import { useCombos } from '../hooks/useContent';
+
+export type CartItemKind = 'product' | 'combo';
 
 interface CartItem {
   productId: string;
   quantity: number;
+  kind?: CartItemKind;
 }
 
 interface CartContextValue {
   items: CartItem[];
-  addToCart: (productId: string, quantity?: number) => void;
+  addToCart: (productId: string, quantity?: number, kind?: CartItemKind) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -29,6 +33,7 @@ const STORAGE_KEY = 'doc-cart';
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const { data: products = [] } = useProducts();
+  const { data: combos = [] } = useCombos();
   const [items, setItems] = useState<CartItem[]>(() => {
     if (typeof window === 'undefined') return [];
     try {
@@ -51,20 +56,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items]);
 
-  const addToCart = useCallback((productId: string, quantity = 1) => {
-    if (quantity < 1) return;
-    setItems((current) => {
-      const existing = current.find((item) => item.productId === productId);
-      if (existing) {
-        return current.map((item) =>
-          item.productId === productId
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
-      }
-      return [...current, { productId, quantity }];
-    });
-  }, []);
+  const addToCart = useCallback(
+    (productId: string, quantity = 1, kind: CartItemKind = 'product') => {
+      if (quantity < 1) return;
+      setItems((current) => {
+        const existing = current.find((item) => item.productId === productId);
+        if (existing) {
+          return current.map((item) =>
+            item.productId === productId
+              ? { ...item, quantity: item.quantity + quantity, kind }
+              : item
+          );
+        }
+        return [...current, { productId, quantity, kind }];
+      });
+    },
+    []
+  );
 
   const removeFromCart = useCallback((productId: string) => {
     setItems((current) =>
@@ -93,10 +101,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const subtotal = useMemo(() => {
     return items.reduce((sum, item) => {
+      if (item.kind === 'combo') {
+        const combo = combos.find((c) => c.id === item.productId);
+        return sum + (combo ? combo.price * item.quantity : 0);
+      }
       const product = products.find((p) => p.id === item.productId);
       return sum + (product ? product.price * item.quantity : 0);
     }, 0);
-  }, [items, products]);
+  }, [items, products, combos]);
 
   return (
     <CartContext.Provider

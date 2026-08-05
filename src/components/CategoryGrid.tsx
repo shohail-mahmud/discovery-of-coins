@@ -64,13 +64,13 @@ export function CategoryGrid() {
   const { data: categories } = useVisibleCategories();
 
   return (
-    <section id="categories" className="bg-brand px-6 pt-16 pb-10 md:pt-20 md:pb-12">
+    <section id="categories" className="bg-brand px-6 pb-8 pt-8 md:pb-10 md:pt-10">
       <div className="mx-auto max-w-4xl">
-        <h2 className="mb-10 text-center font-sans text-sm font-medium uppercase tracking-[0.2em] text-ink/70 md:mb-14">
+        <h2 className="mb-6 text-center font-sans text-sm font-medium uppercase tracking-[0.2em] text-ink/70 md:mb-8">
           Shop by Category
         </h2>
 
-        <div className="grid grid-cols-2 justify-items-center gap-5 md:grid-cols-3 md:gap-8">
+        <div className="grid grid-cols-2 justify-items-center gap-4 md:grid-cols-3 md:gap-6">
           {categories.map((category, index) => (
             <CategoryCube
               key={category.id}
@@ -83,10 +83,10 @@ export function CategoryGrid() {
           ))}
         </div>
 
-        <div className="mt-10 text-center md:mt-12">
+        <div className="mt-6 text-center md:mt-8">
           <Link
             to="/shop"
-            className="inline-block border border-ink bg-ink px-8 py-3.5 font-sans text-xs font-medium uppercase tracking-widest text-brand transition-colors hover:bg-transparent hover:text-ink"
+            className="inline-block border border-ink bg-ink px-7 py-3 font-sans text-xs font-medium uppercase tracking-widest text-brand transition-colors hover:bg-transparent hover:text-ink"
           >
             Shop All Products
           </Link>
