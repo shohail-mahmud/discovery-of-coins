@@ -75,7 +75,7 @@ export interface CartLine {
   id: string;
   kind: 'product' | 'combo';
   name: string;
-  image?: string;
+  image?: string | undefined;
   meta?: string;
   price: number;
   quantity: number;
