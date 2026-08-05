@@ -11,9 +11,9 @@ export function FaqSection() {
   if (visible.length === 0) return null;
 
   return (
-    <section id="faq" className="bg-brand px-6 pb-16 pt-4 md:pb-20 md:pt-6">
+    <section id="faq" className="bg-brand px-6 pb-10 pt-2 md:pb-12 md:pt-4">
       <div className="mx-auto max-w-2xl">
-        <h2 className="mb-8 text-center font-sans text-sm font-medium uppercase tracking-[0.2em] text-ink/70 md:mb-10">
+        <h2 className="mb-5 text-center font-sans text-sm font-medium uppercase tracking-[0.2em] text-ink/70 md:mb-6">
           Frequently Asked Questions
         </h2>
 
@@ -32,7 +32,7 @@ export function FaqSection() {
                   type="button"
                   onClick={() => setOpenId(isOpen ? null : faq.id)}
                   aria-expanded={isOpen}
-                  className="flex w-full items-center justify-between gap-4 py-4 text-left"
+                  className="flex w-full items-center justify-between gap-4 py-3 text-left"
                 >
                   <span className="font-sans text-sm font-medium tracking-wide text-ink">
                     {faq.question}
@@ -44,7 +44,7 @@ export function FaqSection() {
                   )}
                 </button>
                 {isOpen ? (
-                  <p className="pb-4 font-sans text-sm font-light leading-relaxed text-ink/70">
+                  <p className="pb-3 font-sans text-sm font-light leading-relaxed text-ink/70">
                     {faq.answer}
                   </p>
                 ) : null}

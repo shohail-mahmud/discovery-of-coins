@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 
 export function AboutPage() {
   return (
-    <section className="bg-brand px-6 py-10 md:py-16">
+    <section className="bg-brand px-6 py-6 md:py-10">
       <div className="mx-auto max-w-3xl">
-        <div className="mb-6 md:mb-8">
+        <div className="mb-3 md:mb-4">
           <Link
             to="/"
             className="inline-block font-sans text-xs font-medium uppercase tracking-widest text-ink/60 transition-colors hover:text-ink"
@@ -23,7 +23,7 @@ export function AboutPage() {
             About Discovery of Coins
           </h1>
 
-          <div className="mt-6 space-y-5 font-sans text-base font-light leading-relaxed tracking-wide text-ink/80 md:text-lg">
+          <div className="mt-4 space-y-3.5 font-sans text-base font-light leading-relaxed tracking-wide text-ink/80 md:text-lg">
             <p>
               Discovery of Coins is an authentic collectible banknote seller
               based in Dhaka, Bangladesh. We sell banknotes from countries all

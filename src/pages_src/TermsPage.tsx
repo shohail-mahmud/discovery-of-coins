@@ -33,9 +33,9 @@ const policies = [
 
 export function TermsPage() {
   return (
-    <section className="bg-brand px-6 py-10 md:py-16">
+    <section className="bg-brand px-6 py-6 md:py-10">
       <div className="mx-auto max-w-3xl">
-        <div className="mb-6 md:mb-8">
+        <div className="mb-3 md:mb-4">
           <Link
             to="/"
             className="inline-block font-sans text-xs font-medium uppercase tracking-widest text-ink/60 transition-colors hover:text-ink"
@@ -53,7 +53,7 @@ export function TermsPage() {
             Terms & Policy
           </h1>
 
-          <div className="mt-8 space-y-8">
+          <div className="mt-5 space-y-5">
             {policies.map((policy) => (
               <div key={policy.title}>
                 <h2 className="mb-1.5 font-heading text-xl tracking-tight text-ink md:text-2xl">

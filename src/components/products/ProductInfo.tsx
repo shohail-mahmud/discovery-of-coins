@@ -26,7 +26,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3.5">
       <div className="space-y-2">
         <p className="font-sans text-xs font-medium uppercase tracking-widest text-ink/50">
           {product.country}
@@ -36,7 +36,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
         </h1>
       </div>
 
-      <div className="space-y-3 font-sans text-sm font-light tracking-wide text-ink/80">
+      <div className="space-y-1.5 font-sans text-sm font-light tracking-wide text-ink/80">
         <p>
           <span className="font-medium text-ink/50">Denomination:</span>{' '}
           {product.denomination}
@@ -58,12 +58,12 @@ export function ProductInfo({ product }: ProductInfoProps) {
         {formatPrice(product.price)}
       </p>
 
-      <div className="flex flex-wrap items-center gap-4 pt-2">
+      <div className="flex flex-wrap items-center gap-3 pt-1">
         <div className="flex items-center border border-ink/20 bg-paper">
           <button
             type="button"
             onClick={decrease}
-            className="p-3 text-ink/70 transition-colors hover:bg-ink/5"
+            className="p-2.5 text-ink/70 transition-colors hover:bg-ink/5"
             aria-label="Decrease quantity"
           >
             <Minus size={16} />
@@ -74,7 +74,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
           <button
             type="button"
             onClick={increase}
-            className="p-3 text-ink/70 transition-colors hover:bg-ink/5"
+            className="p-2.5 text-ink/70 transition-colors hover:bg-ink/5"
             aria-label="Increase quantity"
           >
             <Plus size={16} />
@@ -85,7 +85,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
           type="button"
           disabled={!inStock}
           onClick={handleAddToCart}
-          className="flex flex-1 items-center justify-center gap-2 bg-ink px-8 py-3.5 font-sans text-sm font-medium uppercase tracking-widest text-brand transition-colors hover:bg-ink/85 disabled:cursor-not-allowed disabled:opacity-40 md:flex-none"
+          className="flex flex-1 items-center justify-center gap-2 bg-ink px-8 py-3 font-sans text-sm font-medium uppercase tracking-widest text-brand transition-colors hover:bg-ink/85 disabled:cursor-not-allowed disabled:opacity-40 md:flex-none"
         >
           <ShoppingBag size={16} strokeWidth={1.5} />
           {inStock ? 'Add to Cart' : 'Out of Stock'}
