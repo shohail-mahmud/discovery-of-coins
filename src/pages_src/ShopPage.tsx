@@ -45,9 +45,9 @@ export function ShopPage() {
   };
 
   return (
-    <section className="bg-brand px-6 py-10 md:py-16">
+    <section className="bg-brand px-6 py-6 md:py-10">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-6 md:mb-8">
+        <div className="mb-3 md:mb-4">
           <Link
             to="/"
             className="inline-block font-sans text-xs font-medium uppercase tracking-widest text-ink/60 transition-colors hover:text-ink"
@@ -60,33 +60,36 @@ export function ShopPage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-10 text-center md:mb-12"
+          className="mb-4 text-center md:mb-5"
         >
-          <h1 className="font-heading text-4xl tracking-tight text-ink md:text-5xl lg:text-6xl">
+          <h1 className="font-heading text-3xl tracking-tight text-ink md:text-4xl">
             Shop
           </h1>
-          <p className="mx-auto mt-4 max-w-xl font-sans text-base font-light text-ink/70">
+          <p className="mx-auto mt-1.5 max-w-xl font-sans text-sm font-light text-ink/70">
             Authentic banknotes, coins and stamps collected from around the
             world.
           </p>
         </motion.div>
 
-        <div className="mb-8 flex flex-wrap justify-center gap-2 md:mb-10">
-          {filters.map((category) => (
-            <button
-              key={category}
-              type="button"
-              onClick={() => handleCategoryChange(category)}
-              className={`border px-4 py-2 font-sans text-xs uppercase tracking-widest transition-colors duration-200 ${
-                activeCategory === category
-                  ? 'border-ink bg-ink text-brand'
-                  : 'border-ink/20 bg-transparent text-ink hover:border-ink/40'
-              }`}
-            >
-              {category}
-            </button>
-          ))}
+        <div className="-mx-6 mb-5 overflow-x-auto px-6 md:mx-0 md:px-0">
+          <div className="flex w-max min-w-full flex-nowrap items-center justify-start gap-1.5 md:w-auto md:flex-wrap md:justify-center">
+            {filters.map((category) => (
+              <button
+                key={category}
+                type="button"
+                onClick={() => handleCategoryChange(category)}
+                className={`whitespace-nowrap border px-2.5 py-1 font-sans text-[11px] uppercase tracking-wider transition-colors duration-200 ${
+                  activeCategory === category
+                    ? 'border-ink bg-ink text-brand'
+                    : 'border-ink/20 bg-transparent text-ink hover:border-ink/40'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
         </div>
+
 
         {isLoading ? (
           <p className="text-center font-sans text-sm font-light text-ink/60">
