@@ -70,3 +70,15 @@ export const COURIERS = [
 export function isInStock(product: { available: boolean; stock: number }) {
   return product.available && product.stock > 0;
 }
+
+export interface CartLine {
+  id: string;
+  kind: 'product' | 'combo';
+  name: string;
+  image?: string;
+  meta?: string;
+  price: number;
+  quantity: number;
+  maxQuantity: number;
+  href?: string;
+}
