@@ -46,4 +46,3 @@ export function CategoryCube({ title, description, icon, index, to }: CategoryCu
     </Link>
   );
 }
-}
