@@ -11,9 +11,9 @@ interface CategoryCubeProps {
 }
 
 export function CategoryCube({ title, description, icon, index, to }: CategoryCubeProps) {
+  // The <a> is the grid item: it must carry the sizing classes, otherwise it
+  // shrink-wraps to its content and tiles with shorter titles render smaller.
   return (
-    // The <a> is the grid item: it must carry the sizing classes, otherwise it
-    // shrink-wraps to its content and tiles with shorter titles render smaller.
     <Link
       to={to}
       className="group block aspect-square w-full max-w-[180px] md:max-w-[200px]"
