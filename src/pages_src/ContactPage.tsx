@@ -1,7 +1,7 @@
 import { Link } from '@/lib/router-compat';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { fetchContactDetails, isFullUrl, socialUrl } from '@/lib/content';
 
 interface ContactItem {
   label: string;
@@ -10,35 +10,72 @@ interface ContactItem {
   isExternal?: boolean;
 }
 
-async function fetchContactDetails() {
-  const { data, error } = await supabase
-    .from('contact_details')
-    .select('*')
-    .limit(1)
-    .maybeSingle();
-  if (error) throw error;
-  return data;
-}
+const handle = (value?: string | null) => (value ?? '').trim();
 
 export function ContactPage() {
-  const { data } = useQuery({ queryKey: ['contact-details'], queryFn: fetchContactDetails });
+  const { data } = useQuery({
+    queryKey: ['contact-details'],
+    queryFn: fetchContactDetails,
+  });
 
-  const handle = (value?: string | null) => (value ?? '').trim();
-  const instagramValue = handle(data?.instagram) || '@discoveryofcoins';
-  const phoneValue = handle(data?.phone) || '01700000000';
+  const contactItems: ContactItem[] = [];
 
-  const contactItems: ContactItem[] = [
-    { label: 'Facebook', value: handle(data?.facebook) || '@username' },
-    {
+  const facebook = handle(data?.facebook);
+  if (facebook) {
+    const href = socialUrl(facebook, 'facebook');
+    if (href) {
+      contactItems.push({ label: 'Facebook', value: facebook, href, isExternal: true });
+    }
+  }
+
+  const instagram = handle(data?.instagram) || '@discoveryofcoins';
+  const instagramHref = socialUrl(instagram, 'instagram');
+  if (instagramHref) {
+    contactItems.push({
       label: 'Instagram',
-      value: instagramValue,
-      href: `https://instagram.com/${instagramValue.replace('@', '')}`,
+      value: instagram,
+      href: instagramHref,
       isExternal: true,
-    },
-    { label: "Admin's Instagram", value: handle(data?.admin_instagram) || '@username' },
-    { label: 'WhatsApp Channel', value: handle(data?.whatsapp_channel) || '@username' },
-    { label: 'Phone', value: phoneValue, href: `tel:${phoneValue}` },
-  ];
+    });
+  }
+
+  const adminInstagram = handle(data?.admin_instagram);
+  if (adminInstagram) {
+    const href = socialUrl(adminInstagram, 'instagram');
+    if (href) {
+      contactItems.push({
+        label: "Admin's Instagram",
+        value: adminInstagram,
+        href,
+        isExternal: true,
+      });
+    }
+  }
+
+  const whatsapp = handle(data?.whatsapp_channel);
+  if (whatsapp) {
+    if (isFullUrl(whatsapp)) {
+      contactItems.push({
+        label: 'WhatsApp Channel',
+        value: 'Join our WhatsApp Channel',
+        href: whatsapp,
+        isExternal: true,
+      });
+    } else {
+      const href = socialUrl(whatsapp, 'whatsapp');
+      if (href) {
+        contactItems.push({
+          label: 'WhatsApp Channel',
+          value: whatsapp,
+          href,
+          isExternal: true,
+        });
+      }
+    }
+  }
+
+  const phone = handle(data?.phone) || '01700000000';
+  contactItems.push({ label: 'Phone', value: phone, href: `tel:${phone}` });
 
   return (
     <section className="bg-brand px-6 py-6 md:py-10">
