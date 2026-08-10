@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Trash2, Pencil, Plus, X } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useProducts } from '@/hooks/useProducts';
+import { useCategories } from '@/hooks/useContent';
 import { formatPrice, PRODUCT_BUCKET } from '@/lib/store';
 import { productCategories, productTypes, type Product } from '@/data/products';
 import { ProductImage } from '@/components/products/ProductImage';
@@ -69,6 +70,19 @@ export function AdminProducts() {
   const [error, setError] = useState<string | null>(null);
 
   const invalidate = () => queryClient.invalidateQueries({ queryKey: ['products'] });
+
+  // Categories come from the `categories` table (the same ones shown on the
+  // website and managed in the admin "Categories" page), so new categories
+  // like "Polymer Banknotes" appear here automatically. The hardcoded list is
+  // kept as a fallback while loading or if the table is empty.
+  const { data: dbCategories = [] } = useCategories();
+  const categoryOptions = useMemo(() => {
+    const names = new Set<string>();
+    [...dbCategories.map((c) => c.name), ...productCategories].forEach((name) => {
+      if (name && name !== 'All') names.add(name);
+    });
+    return Array.from(names);
+  }, [dbCategories]);
 
   const save = useMutation({
     mutationFn: async () => {
@@ -142,7 +156,7 @@ export function AdminProducts() {
 
   const startNew = () => {
     setEditingId('new');
-    setDraft({ ...emptyDraft });
+    setDraft({ ...emptyDraft, category: categoryOptions[0] ?? emptyDraft.category });
     setError(null);
   };
 
@@ -193,7 +207,7 @@ export function AdminProducts() {
               value={draft.category}
               onChange={(e) => setDraft({ ...draft, category: e.target.value })}
             >
-              {productCategories.map((category) => (
+              {categoryOptions.map((category) => (
                 <option key={category} value={category}>
                   {category}
                 </option>
