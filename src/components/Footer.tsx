@@ -1,4 +1,6 @@
 import { Link } from '@/lib/router-compat';
+import { useQuery } from '@tanstack/react-query';
+import { fetchContactDetails, socialUrl } from '@/lib/content';
 
 const navLinks = [
   { label: 'Home', href: '/' },
@@ -10,6 +12,20 @@ const navLinks = [
 ];
 
 export function Footer() {
+  const { data } = useQuery({
+    queryKey: ['contact-details'],
+    queryFn: fetchContactDetails,
+  });
+
+  // Contact details come from the `contact_details` table (editable in the
+  // admin dashboard). Fallbacks keep the footer sensible while loading or
+  // before an admin fills the fields in.
+  const instagram = (data?.instagram ?? '').trim() || '@discoveryofcoins';
+  const instagramHref = socialUrl(instagram, 'instagram') ?? '#';
+  const phone = (data?.phone ?? '').trim() || '01700000000';
+  const whatsapp = (data?.whatsapp_channel ?? '').trim();
+  const whatsappHref = socialUrl(whatsapp, 'whatsapp');
+
   return (
     <footer className="border-t border-ink/10 bg-brand px-6 pt-10 pb-8 md:pt-12 md:pb-10">
       <div className="mx-auto grid max-w-6xl gap-8 md:grid-cols-3 md:gap-6">
@@ -50,21 +66,35 @@ export function Footer() {
               <span className="text-ink/50">Instagram</span>
               <br />
               <a
-                href="https://instagram.com/discoveryofcoins"
+                href={instagramHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="transition-colors hover:text-ink"
               >
-                @discoveryofcoins
+                {instagram}
               </a>
             </p>
             <p>
               <span className="text-ink/50">Phone</span>
               <br />
-              <a href="tel:01700000000" className="transition-colors hover:text-ink">
-                01700000000
+              <a href={`tel:${phone}`} className="transition-colors hover:text-ink">
+                {phone}
               </a>
             </p>
+            {whatsappHref ? (
+              <p>
+                <span className="text-ink/50">WhatsApp</span>
+                <br />
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-ink"
+                >
+                  Join our channel
+                </a>
+              </p>
+            ) : null}
           </div>
         </div>
       </div>
