@@ -12,7 +12,12 @@ interface CategoryCubeProps {
 
 export function CategoryCube({ title, description, icon, index, to }: CategoryCubeProps) {
   return (
-    <Link to={to} className="group block">
+    // The <a> is the grid item: it must carry the sizing classes, otherwise it
+    // shrink-wraps to its content and tiles with shorter titles render smaller.
+    <Link
+      to={to}
+      className="group block aspect-square w-full max-w-[180px] md:max-w-[200px]"
+    >
       <motion.article
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -23,7 +28,7 @@ export function CategoryCube({ title, description, icon, index, to }: CategoryCu
           ease: [0.22, 1, 0.36, 1],
         }}
         whileHover={{ y: -6 }}
-        className="flex aspect-square w-full max-w-[180px] flex-col items-center justify-center gap-3 border border-ink/10 bg-paper p-4 text-center transition-shadow duration-300 hover:shadow-lg md:max-w-[200px]"
+        className="flex h-full w-full flex-col items-center justify-center gap-3 border border-ink/10 bg-paper p-4 text-center transition-shadow duration-300 hover:shadow-lg"
       >
         <div className="flex h-14 w-14 items-center justify-center text-ink/90 transition-transform duration-300 group-hover:scale-105">
           {icon}
@@ -40,4 +45,5 @@ export function CategoryCube({ title, description, icon, index, to }: CategoryCu
       </motion.article>
     </Link>
   );
+}
 }
