@@ -35,6 +35,44 @@ export interface Combo {
   items: ComboItem[];
 }
 
+export interface ContactDetails {
+  id: string;
+  facebook: string;
+  instagram: string;
+  admin_instagram: string;
+  whatsapp_channel: string;
+  phone: string;
+}
+
+export async function fetchContactDetails(): Promise<ContactDetails | null> {
+  const { data, error } = await supabase
+    .from('contact_details')
+    .select('*')
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  return (data as ContactDetails | null) ?? null;
+}
+
+export function isFullUrl(value: string): boolean {
+  return /^https?:\/\//i.test(value.trim());
+}
+
+// Builds a clickable URL from a stored value. If the value is already a full
+// URL it is returned as-is; otherwise it is treated as a handle (e.g.
+// "my-page" or "@my-page") and prefixed with the platform's base URL.
+export function socialUrl(
+  value: string,
+  base: 'facebook' | 'instagram' | 'whatsapp',
+): string | null {
+  const v = value.trim();
+  if (!v) return null;
+  if (isFullUrl(v)) return v;
+  const handle = v.replace(/^@/, '');
+  if (base === 'whatsapp') return `https://whatsapp.com/channel/${handle}`;
+  return `https://${base}.com/${handle}`;
+}
+
 export const MAX_COMBO_SLOTS = 50;
 
 export async function fetchCategories(): Promise<CategoryRow[]> {
