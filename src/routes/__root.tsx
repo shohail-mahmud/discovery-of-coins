@@ -11,6 +11,13 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import {
+  SITE_URL,
+  SITE_NAME,
+  OG_IMAGE,
+  orgSchema,
+  webSiteSchema,
+} from "../lib/seo";
 
 function NotFoundComponent() {
   return (
@@ -81,20 +88,45 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "google-site-verification",
         content: "KGw3qfZaiWoYQn8Usl3oNkcEql-BvhAeRIMSx3hANCc",
       },
-      { title: "Discovery of Coins" },
+      { title: `${SITE_NAME} — Authentic Coins, Banknotes & Stamps` },
       {
         name: "description",
-        content: "Discovery of Coins — collectible coins, curated and delivered.",
+        content:
+          "Discovery of Coins — buy authentic collectible coins, banknotes and stamps from Bangladesh and around the world. Rare collectibles delivered across Bangladesh.",
       },
-      { name: "author", content: "Discovery of Coins" },
-      { property: "og:title", content: "Discovery of Coins" },
+      { name: "author", content: SITE_NAME },
+      { name: "theme-color", content: "#f7d417" },
+      { property: "og:site_name", content: SITE_NAME },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: SITE_URL },
+      { property: "og:title", content: `${SITE_NAME} — Authentic Coins, Banknotes & Stamps` },
       {
         property: "og:description",
-        content: "Discovery of Coins — collectible coins, curated and delivered.",
+        content:
+          "Buy authentic collectible coins, banknotes and stamps from Bangladesh and around the world.",
       },
-      { property: "og:type", content: "website" },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:locale", content: "en_US" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: `${SITE_NAME} — Authentic Coins, Banknotes & Stamps` },
+      {
+        name: "twitter:description",
+        content:
+          "Buy authentic collectible coins, banknotes and stamps from Bangladesh and around the world.",
+      },
+      { name: "twitter:image", content: OG_IMAGE },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(orgSchema()),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(webSiteSchema()),
+      },
     ],
     links: [
       {
@@ -112,24 +144,32 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
   }),
   shellComponent: RootShell,
+  component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
 
-function RootShell() {
-  const { queryClient } = Route.useRouteContext();
-
+function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
         <HeadContent />
       </head>
       <body>
-        <QueryClientProvider client={queryClient}>
-          <Outlet />
-        </QueryClientProvider>
+        {children}
         <Scripts />
       </body>
     </html>
+  );
+}
+
+function RootComponent() {
+  const { queryClient } = Route.useRouteContext();
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+      <Outlet />
+    </QueryClientProvider>
   );
 }
