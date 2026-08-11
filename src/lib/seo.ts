@@ -48,6 +48,8 @@ export interface ProductSchemaInput {
   inStock: boolean;
   category?: string;
   sku?: string;
+  url?: string;
+  condition?: string;
 }
 
 export function productSchema(product: ProductSchemaInput) {
@@ -58,8 +60,12 @@ export function productSchema(product: ProductSchemaInput) {
     description: product.description || SITE_TAGLINE,
     image: product.image ? [product.image] : undefined,
     sku: product.sku,
+    url: product.url,
     brand: { "@type": "Brand", name: SITE_NAME },
     category: product.category,
+    itemCondition: product.condition
+      ? "https://schema.org/UsedCondition"
+      : "https://schema.org/NewCondition",
     offers: {
       "@type": "Offer",
       priceCurrency: "BDT",
@@ -67,22 +73,36 @@ export function productSchema(product: ProductSchemaInput) {
       availability: product.inStock
         ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock",
-      url: undefined as string | undefined,
+      url: product.url,
       seller: { "@type": "Organization", name: SITE_NAME },
     },
   };
 }
 
-export function faqSchema(
-  faqs: { question: string; answer: string }[],
-) {
+// Breadcrumb navigation for shop > product pages (e-commerce best practice).
+export function breadcrumbSchema(items: { name: string; url: string }[]) {
   return {
     "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqs.map((f) => ({
-      "@type": "Question",
-      name: f.question,
-      acceptedAnswer: { "@type": "Answer", text: f.answer },
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+}
+
+// ItemList schema for the shop / category listing pages.
+export function itemListSchema(items: { name: string; url: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      url: item.url,
     })),
   };
 }
